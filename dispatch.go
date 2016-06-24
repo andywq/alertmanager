@@ -70,7 +70,7 @@ type AlertBlock struct {
 // APIAlert is the API representation of an alert, which is a regular alert
 // annotated with silencing and inhibition info.
 type APIAlert struct {
-	*model.Alert
+	*types.Alert
 
 	Inhibited bool   `json:"inhibited"`
 	Silenced  uint64 `json:"silenced,omitempty"`
@@ -111,7 +111,7 @@ func (d *Dispatcher) Groups() AlertOverview {
 			now := time.Now()
 
 			var apiAlerts []*APIAlert
-			for _, a := range types.Alerts(ag.alertSlice()...) {
+			for _, a := range ag.alertSlice() {
 				if !a.EndsAt.IsZero() && a.EndsAt.Before(now) {
 					continue
 				}

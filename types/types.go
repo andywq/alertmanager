@@ -142,6 +142,8 @@ type Alert struct {
 	Timeout      bool
 	WasSilenced  bool `json:"-"`
 	WasInhibited bool `json:"-"`
+
+	ID           string `json:"id,omitempty"`
 }
 
 // AlertSlice is a sortable slice of Alerts.
@@ -268,4 +270,15 @@ func (n *NotifyInfo) Fingerprint() model.Fingerprint {
 	fp := model.Fingerprint(h.Sum64())
 
 	return fp ^ n.Alert
+}
+
+type Event struct {
+	ID        uint64         `json:"id"`
+	Title     string         `json:"title"`
+	Kind      string         `json:"kind"`
+	Level     string         `json:"level"`
+	IsSafe    string         `json:"is_safe"`
+	Creator   string         `json:"creator"`
+	Alerts    []string       `json:"alerts"`
+	CreatedAt time.Time      `json:"createdAt"`
 }

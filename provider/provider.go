@@ -111,3 +111,9 @@ type Notifies interface {
 	// Set several notifies at once. All or none must succeed.
 	Set(ns ...*types.NotifyInfo) error
 }
+
+type Events interface {
+	All() ([]*types.Event, error)
+	Set(*types.Event) (uint64, error)
+	Get(id uint64) (*types.Event, error)
+}

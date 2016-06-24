@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"sync"
+	"strconv"
 
 	"github.com/boltdb/bolt"
 	"github.com/prometheus/alertmanager/provider"
@@ -139,6 +140,7 @@ func (a *Alerts) getPending() ([]*types.Alert, error) {
 			if err := json.Unmarshal(v, &a); err != nil {
 				return err
 			}
+			a.ID = strconv.FormatUint(binary.BigEndian.Uint64(k), 10)
 			alerts = append(alerts, &a)
 		}
 

@@ -55,6 +55,7 @@ func init() {
 type API struct {
 	alerts         provider.Alerts
 	silences       provider.Silences
+	events         provider.Events
 	config         string
 	resolveTimeout time.Duration
 	uptime         time.Time
@@ -67,11 +68,12 @@ type API struct {
 }
 
 // NewAPI returns a new API.
-func NewAPI(alerts provider.Alerts, silences provider.Silences, gf func() AlertOverview) *API {
+func NewAPI(alerts provider.Alerts, silences provider.Silences, events provider.Events, gf func() AlertOverview) *API {
 	return &API{
 		context:  route.Context,
 		alerts:   alerts,
 		silences: silences,
+		events:   events,
 		groups:   gf,
 		uptime:   time.Now(),
 	}
@@ -98,6 +100,10 @@ func (api *API) Register(r *route.Router) {
 	r.Post("/silences", ihf("add_silence", api.addSilence))
 	r.Get("/silence/:sid", ihf("get_silence", api.getSilence))
 	r.Del("/silence/:sid", ihf("del_silence", api.delSilence))
+
+	r.Get("/events", ihf("list_events", api.listEvents))
+	r.Post("/events", ihf("add_event", api.addEvent))
+	r.Get("/event/:eid/alerts", ihf("list_event_alerts", api.listEventAlerts))
 }
 
 // Update sets the configuration string to a new value.
@@ -422,7 +428,7 @@ func respondError(w http.ResponseWriter, apiErr apiError, data interface{}) {
 	if err != nil {
 		return
 	}
-	log.Errorf("api error: %v", apiErr)
+	log.Errorf("api error: %v", apiErr.Error())
 
 	w.Write(b)
 }

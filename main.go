@@ -103,6 +103,12 @@ func main() {
 	}
 	defer silences.Close()
 
+	events, err := boltmem.NewEvents(*dataDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer events.Close()
+
 	var (
 		inhibitor *Inhibitor
 		tmpl      *template.Template
@@ -110,7 +116,7 @@ func main() {
 	)
 	defer disp.Stop()
 
-	api := NewAPI(alerts, silences, func() AlertOverview {
+	api := NewAPI(alerts, silences, events, func() AlertOverview {
 		return disp.Groups()
 	})
 
