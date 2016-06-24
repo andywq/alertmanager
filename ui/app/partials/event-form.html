@@ -1,0 +1,71 @@
+<form novalidate name="form" class="forms">
+	<uib-tabset>
+		<uib-tab index="0" heading="Base Info">
+			<fieldset id="event-create">
+				<legend><span class="desc">Create a new event.</span></legend>
+
+				<label>标题</label>
+				<row>
+					<column>
+						<input type="text" placeholder="标题" ng-model="e.title" required>
+					</column>
+				</row>
+
+				<label>类别</label>
+				<row>
+					<column>
+						<select ng-model="e.kind" required>
+							<option value="">--select--</option>
+							<option value="maintain">维护</option>
+							<option value="abnormal">异常</option>
+							<option value="prewarning">预警</option>
+						</select>
+					</column>
+				</row>
+
+				<label>级别</label>
+				<row>
+					<column>
+						<select ng-model="e.level" required>
+							<option value="">--select--</option>
+							<option value="info">普通</option>
+							<option value="warn">严重</option>
+							<option value="critical">重大</option>
+						</select>
+					</column>
+				</row>
+
+				<row>
+					<column>
+						<label>安全事件</label>
+					</column>
+					<column>
+						<label class="checkbox"><input type="checkbox" ng-model="e.isSafe">是</label>
+					</column>
+				</row>
+
+				<label>创建人</label>
+				<row>
+					<column>
+						<input type="text" placeholder="创建人" ng-model="e.creator" required>
+					</column>
+				</row>
+			</fieldset>
+
+			<div class="btn-group">
+				<button type="primary" ng-disabled="form.$invalid" ng-click="create()" upper>Create</button>
+			</div>
+			<div ng-show="error != null" class="alert alert-error">
+				<span class="error">创建失败</span>
+			</div>
+		</uib-tab>
+		<uib-tab index="1" heading="Alerts">
+			<legend><span class="desc">Related alerts.</span></legend>
+			<div ng-repeat="a in initial_alerts">
+				<div style="float:left;margin-top:12px">
+					<button type="primary" small><label class="checkbox selected_alert"><input type="checkbox" class="selected_alert" checked="true" ng-click="toggleSelectAlert(a)"></label></button>
+				</div>
+				<alert-item class="list-item" alert="a"></alert-item>
+			</div>
+		</uib-tab>
+</form>

@@ -1,0 +1,18 @@
+<div id="events">
+  <h2>Events</h2>
+  <hr/>
+  <div class="alert-group" ng-repeat="event in events">
+    <div class="alert-group-header group" ng-click="showAlerts(event)">
+      <span class="lbl">标题: {{ event.title }} </span>
+      <span class="lbl">类别: {{ event.kind }} </span>
+      <span class="lbl">级别: {{ event.level }} </span>
+      <span class="lbl">安全事件: {{ event.is_safe }} </span>
+      <span class="lbl">创建人: {{ event.creator }} </span>
+      <span class="lbl">创建时间: {{ event.createdAt | limitTo:19 }} </span>
+    </div>
+
+    <div ng-repeat="a in event.alertObjs" ng-show="event.showAlerts">
+      <alert-item class="list-item" alert="a" ></alert-item>
+    </div>
+  </div>
+</div>

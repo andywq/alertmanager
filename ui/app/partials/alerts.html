@@ -22,16 +22,24 @@
 </form>
 
 <div id="alert-groups" ng-class="{'hide-silenced': hideSilenced}">
+<div id="add-event">
+  <button type="primary" small ng-click="showEventForm()">Add Event</button>
+</div>
+
+<div id="alert-groups">
 	<div class="alert-group" ng-repeat="group in groups | filter:notEmpty">
-		<div class="alert-group-header group">
+		<div class="alert-group-header group" ng-click="toggleAlerts(group)">
 			<span ng-repeat="(ln, lv) in group.labels" class="lbl {{ ln == 'alertname' ? 'lbl-highlight' : '' }}">
 				{{ ln }} = '{{ lv }}'
 			</span>
 		</div>	
 	
-		<div ng-repeat="blk in group.blocks">
+		<div ng-repeat="blk in group.blocks" ng-show="group.showAlerts">
 			<div ng-show="receivers.indexOf(blk.routeOpts.receiver) >= 0" ng-show"blk.alerts">
 				<div ng-repeat="a in blk.alerts">
+					<div style="float:left;margin-top:12px">
+						<button type="primary" small><label class="checkbox"><input type="checkbox" ng-checked="selected_alerts[a.id] != undefined" ng-click="toggleSelectAlert(a)"></label></button>
+					</div>
 					<alert class="list-item" alert="a" group="group.labels"></alert>
 				</div>
 			</div>

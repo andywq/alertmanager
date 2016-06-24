@@ -128,6 +128,9 @@ angular.module('am.controllers').controller('NavCtrl',
     }, {
       name: 'Status',
       url: 'status'
+    }, {
+      name: 'Events',
+      url: 'events'
     }];
 
     $scope.selected = function(item) {
@@ -168,7 +171,7 @@ angular.module('am.controllers').controller('AlertCtrl',
 );
 
 angular.module('am.controllers').controller('AlertsCtrl',
-  function($scope, $location, AlertGroups) {
+  function($scope, $location, AlertGroups, $uibModal) {
     $scope.groups = null;
     $scope.allReceivers = [];
 
@@ -199,8 +202,10 @@ angular.module('am.controllers').controller('AlertsCtrl',
         function(data) {
           $scope.groups = data.data;
 
+          // console.log($scope.groups);
           $scope.allReceivers = [];
           angular.forEach($scope.groups, function(group) {
+            group.showAlerts = false;
             angular.forEach(group.blocks, function(blk) {
               if (this.indexOf(blk.routeOpts.receiver) < 0) {
                 this.push(blk.routeOpts.receiver);
@@ -227,6 +232,34 @@ angular.module('am.controllers').controller('AlertsCtrl',
     };
 
     $scope.refresh();
+
+    $scope.toggleAlerts = function(group) {
+      group.showAlerts = !group.showAlerts;
+    }
+
+    $scope.selected_alerts = {};
+      $scope.toggleSelectAlert = function(a) {
+      if ($scope.selected_alerts[a.id] == undefined) {
+        $scope.selected_alerts[a.id] = a;
+      } else {
+        delete $scope.selected_alerts[a.id];
+      }
+      // console.log($scope.selected_alerts);
+    }
+
+    $scope.showEventForm = function() {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: '/app/partials/event-form.html',
+        controller: 'EventFormCtrl',
+        size: 'lg',
+        resolve: {
+          initial_alerts: function () {
+            return $scope.selected_alerts;
+          }
+        }
+      });
+    }
   }
 );
 
@@ -396,6 +429,7 @@ angular.module('am', [
   'ngRoute',
   'ngSanitize',
   'angularMoment',
+  'ui.bootstrap',
 
   'am.controllers',
   'am.services',
@@ -419,8 +453,13 @@ angular.module('am').config(
       templateUrl: 'app/partials/status.html',
       controller: 'StatusCtrl'
     }).
+    when('/events', {
+      templateUrl: '/app/partials/events.html',
+      controller: 'EventsCtrl'
+    }).
     otherwise({
       redirectTo: '/alerts'
     });
   }
 );
+
